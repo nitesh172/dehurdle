@@ -14,6 +14,7 @@ const updateTaskSchema = yup.object({
   title: yup.string().optional().trim(),
   description: yup.string().nullable().optional().default(""),
   status: yup.string().oneOf(["TODO", "IN_PROGRESS", "DONE"]),
+  dueDate: yup.date().optional(),
 })
 
 const signupSchema = yup.object({
