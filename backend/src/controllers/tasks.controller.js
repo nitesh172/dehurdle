@@ -12,6 +12,13 @@ const getTask = async (req, res) => {
         .json({ message: "Task not found" })
     }
 
+    const creatorId = task.createdBy && (task.createdBy._id || task.createdBy)
+    if (creatorId.toString() !== req.user.id.toString()) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "You are not authorized to view this task" })
+    }
+
     res.status(StatusCodes.OK).json(task)
   } catch (error) {
     res
@@ -22,7 +29,7 @@ const getTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
   try {
-    const filter = {}
+    const filter = { createdBy: req.user.id }
     if (req.query.status) {
       filter.status = req.query.status
     }
@@ -37,7 +44,10 @@ const getTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const task = await tasksService.createTask(req.body)
+    const task = await tasksService.createTask({
+      ...req.body,
+      createdBy: req.user.id,
+    })
     res.status(StatusCodes.CREATED).json(task)
   } catch (error) {
     res
@@ -54,6 +64,13 @@ const updateTask = async (req, res) => {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "Task not found" })
+    }
+
+    const creatorId = task.createdBy && (task.createdBy._id || task.createdBy)
+    if (creatorId.toString() !== req.user.id.toString()) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "You are not authorized to update this task" })
     }
 
     const updatedTask = await tasksService.updateTask(taskId, req.body)
@@ -73,6 +90,13 @@ const deleteTask = async (req, res) => {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "Task not found" })
+    }
+
+    const creatorId = task.createdBy && (task.createdBy._id || task.createdBy)
+    if (creatorId.toString() !== req.user.id.toString()) {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "You are not authorized to delete this task" })
     }
 
     await tasksService.deleteTask(taskId)

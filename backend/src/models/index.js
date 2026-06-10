@@ -1,3 +1,4 @@
-const Task = require("./task.model")
+const User = require("./user.model")
+const Tasks = require("./tasks.model")
 
-module.exports = { Task }
+module.exports = { User, Tasks }
