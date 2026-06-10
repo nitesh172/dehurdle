@@ -43,11 +43,12 @@ The Dehurdle frontend is configured for optimized deployment on **Vercel**.
 *   **Single Page App Routing**: Handled via [`frontend/vercel.json`](file:///Users/nitesh/Documents/crio/dehurdle/frontend/vercel.json) to redirect all client-side routes back to `/index.html`.
 
 ### 🔑 Environment Variables
-When configuring the project in the Vercel dashboard, make sure to add the following environment variable to connect the frontend to the deployed AWS EC2 backend:
+When configuring the project in the Vercel dashboard, make sure to add the following environment variable to connect the frontend to the deployed AWS EC2 backend. Since Vercel serves the app over HTTPS, setting the API URL to `/api` allows Vercel to securely proxy your backend requests, avoiding browser Mixed Content blocks:
 
 | Key | Value | Description |
 | :--- | :--- | :--- |
-| **`VITE_API_URL`** | `http://13.232.86.104:8080` | URL of the live deployed AWS EC2 backend API |
+| **`VITE_API_URL`** | `/api` | Relative proxy prefix configured in `vercel.json` to route to AWS EC2 backend |
+
 
 ---
 
